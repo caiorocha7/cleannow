@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
                     <a href="https://github.com/gabrielfmcoelho" target="_blank" rel="noreferrer">
                         Gabriel Coelho
                     </a>
-                    <a href="https://github.com/caiorocha6" target="_blank" rel="noreferrer">
+                    <a href="https://github.com/caiorocha7" target="_blank" rel="noreferrer">
                         Caio Rocha
                     </a>
                 </div>

@@ -1,6 +1,6 @@
-appId: com.example.nextron
-productName: My Nextron App
-copyright: Copyright © 2018 Yoshihide Shiono
+appId: com.cleannow.nextron
+productName: CleanNow Desktop
+copyright: Copyright © 2024 Gabriel Coelho & Caio Rocha
 directories:
   output: dist
   buildResources: resources
