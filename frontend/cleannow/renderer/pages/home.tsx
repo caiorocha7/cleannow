@@ -1,37 +1,84 @@
-import React from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import Image from 'next/image';
+import type { NextPage } from "next";
+import React, { useEffect, useState } from "react";
+import DashboardCard from "../components/DashboardCard";
+import Navbar from "../components/Navbar";
 
-export default function HomePage() {
+const Dashboard: NextPage = () => {
+  const [data, setData] = useState([
+    { title: "Customers", value: 0, iconUrl: "/images/customers.png", apiPath: "/clientes" },
+    { title: "VIP Customers", value: 0, iconUrl: "/images/vip.png", apiPath: "/clientes-vip" },
+    { title: "Orders", value: 0, iconUrl: "/images/orders.png", apiPath: "/pedidos" },
+    { title: "Services", value: 0, iconUrl: "/images/services.png", apiPath: "/servicos" },
+    { title: "Appointments", value: 0, iconUrl: "/images/appointments.png", apiPath: "/agendamentos" },
+  ]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const API_BASE_URL = "http://localhost:8080"; // Replace with your API base URL
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const updatedData = await Promise.all(
+        data.map(async (item) => {
+          const response = await fetch(`${API_BASE_URL}${item.apiPath}`);
+          if (!response.ok) throw new Error(`Failed to fetch ${item.title}`);
+          const result = await response.json();
+          return { ...item, value: result.length }; // Assuming API returns an array
+        })
+      );
+      setData(updatedData);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      setError("Failed to load dashboard data. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
-    <React.Fragment>
-      <Head>
-        <title>CleanNow Dry Cleaner</title>
-      </Head>
-      <div className="flex flex-col items-center mt-10">
-        <Image src="/images/logo.png" alt="CleanNow Logo" width={120} height={120} />
-        <h1 className="text-4xl font-bold mt-4">CleanNow</h1>
-        <p className="mt-2 text-lg">
-          Gerencie sua lavanderia
-          <span className='font-bold'> suja </span>
-          com facilidade
-        </p>
-        <div className="grid grid-cols-2 gap-4 mt-8">
-          {[
-            { name: 'Serviços', route: '/servicos' },
-            { name: 'Agendamentos', route: '/agendamentos' },
-            { name: 'Planos de Assinatura', route: '/planos-assinatura' },
-            { name: 'Pedidos', route: '/pedidos' },
-            { name: 'Clientes VIP', route: '/clientes-vip' },
-            { name: 'Clientes', route: '/clientes' },
-          ].map((link) => (
-            <Link href={link.route} key={link.name} className='btn-blue text-center'>
-              {link.name}
-            </Link>
-          ))}
-        </div>
+    <div className="flex flex-row">
+      <Navbar />
+      <div className="min-h-screen bg-gray-100 p-4 flex-1">
+        <h1 className="text-2xl font-bold mb-4 text-blue-800">Dashboard</h1>
+
+        {/* Error Alert */}
+        {error && (
+          <div className="bg-red-500 text-white px-4 py-2 rounded mb-4 flex justify-between items-center">
+            <span>{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="text-white font-bold px-2 rounded hover:bg-red-700"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {data.map((item) => (
+              <DashboardCard
+                key={item.title}
+                title={item.title}
+                value={item.value}
+                iconUrl={item.iconUrl}
+              />
+            ))}
+          </div>
+        )}
       </div>
-    </React.Fragment>
+    </div>
   );
-}
+};
+
+export default Dashboard;

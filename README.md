@@ -8,7 +8,7 @@ Sistema de Gestão para **Lavanderias** com Interface de Desktop e API
 
 ## Estrutura do Projeto
 A arquitetura do projeto foi projetada para garantir uma experiência de uso eficiente e segura, com uma interface de desktop amigável em Electron e um backend organizado e escalável em Spring Boot, utilizando os princípios de POO.
-
+      
 ```plaintext
 cleannow
 ├── src
